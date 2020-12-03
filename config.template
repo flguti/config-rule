@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ''
+Resources:
+
+  
+  # S3 BUCKET public access via policy
+ s3bucketpublicaccess1:
+    Type: 'AWS::Config::ConfigRule'
+    Properties:
+      ConfigRuleName: aws-controltower-s3-05-bucket-public-policy-access1
+      InputParameters: 
+        controlPolicy: '    {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                "Sid": "Access_within_account",
+                "Principal": {
+                    "AWS": "`FN:Sub!`: `${AWS::AccountId}`"
+                },
+                "Effect": "Allow",
+                "Action": "s3:*",
+                "Resource": "*"
+                },
+                {
+                "Sid": "AWS_Services",
+                "Principal": {
+                    "Service": "*"
+                },
+                "Effect": "Allow",
+                "Action": "s3:*",
+                "Resource": "*"
+        }
+    ]
+    }'
+      Description: >-
+        A config rule is used to check if S3 buckets has bucket policy that
+        allows public access.
+      Scope:
+        ComplianceResourceTypes: 
+           - 'AWS::S3::Bucket'
+      Source:
+        Owner: AWS
+        SourceIdentifier: S3_BUCKET_POLICY_NOT_MORE_PERMISSIVE
+Parameters: {}
+Metadata: {}
+Conditions: {}
